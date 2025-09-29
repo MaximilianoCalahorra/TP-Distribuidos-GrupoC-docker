@@ -1,0 +1,19 @@
+# Variables de entorno
+.env
+
+# Docker: datos persistentes y logs
+*.log
+volumes/
+
+# IDEs / STS / Eclipse
+/.metadata/
+/bin/
+/target/
+/.settings/
+/.project
+.classpath
+.springBeans
+
+# Archivos temporales de sistema operativo
+.DS_Store
+Thumbs.db
