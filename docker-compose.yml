@@ -5,7 +5,7 @@ services:
   mysql:
     image: mysql:8
     container_name: mysql
-    restart: always
+    restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: ${DATABASE_PASSWORD}
       MYSQL_DATABASE: ${DATABASE_NAME}
@@ -22,7 +22,7 @@ services:
       context: ../TP-Distribuidos-GrupoC-backend/grpc_server
     image: sd-grpc-server-grupo-c:1.0
     container_name: grpc-server
-    restart: always
+    restart: unless-stopped
     ports:
       - "9090:9090"
     environment:
@@ -42,10 +42,47 @@ services:
   mailhog:
     image: mailhog/mailhog
     container_name: mailhog
-    restart: always
+    restart: unless-stopped
     ports:
       - "1025:1025"  # puerto SMTP
       - "8025:8025"  # interfaz web
+  
+  # ==========================================
+  # Kafka Broker (modo KRaft, sin Zookeeper)
+  # ==========================================
+  kafka:
+    image: apache/kafka:3.7.0
+    container_name: kafka-broker
+    restart: unless-stopped
+    ports:
+      - "9092:9092"   # comunicación interna entre contenedores
+      - "29092:29092" # acceso desde tu máquina local
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,PLAINTEXT_HOST://0.0.0.0:29092,CONTROLLER://0.0.0.0:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT,CONTROLLER:PLAINTEXT
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    volumes:
+      - kafka-data:/var/lib/kafka/data
+
+  # ==========================================
+  # Kafka UI (Kafbat)
+  # ==========================================
+  kafbat-ui:
+    container_name: kafbat-ui
+    image: ghcr.io/kafbat/kafka-ui:latest
+    restart: unless-stopped
+    ports:
+      - "9000:8080"
+    environment:
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
+    depends_on:
+      - kafka
 
   # ==========================================
   # Cliente gRPC (Express)
@@ -55,7 +92,7 @@ services:
       context: ../TP-Distribuidos-GrupoC-backend/grpc_client
     image: sd-grpc-client-grupo-c:1.0
     container_name: grpc-client
-    restart: always
+    restart: unless-stopped
     ports:
       - "3000:3000"
     environment:
@@ -71,7 +108,7 @@ services:
       context: ../TP-Distribuidos-GrupoC-frontend
     image: sd-frontend-grupo-c:1.0
     container_name: frontend
-    restart: always
+    restart: unless-stopped
     ports:
       - "5173:80"
     depends_on:
@@ -79,3 +116,4 @@ services:
 
 volumes:
   db_data:
+  kafka-data:
