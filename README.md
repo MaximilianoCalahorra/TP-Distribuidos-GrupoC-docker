@@ -13,20 +13,23 @@ Este repositorio contiene los recursos necesarios para levantar el stack complet
 
 - Kafka Broker (modo KRaft) y Kafbat UI para mensajería entre ONGs
 
+- Kafka Service (Spring Boot): microservicio encargado de gestionar la comunicación entre los distintos servicios vía Kafka (productores, consumidores y creación automática de topics).
+
 ---
 
 ### ✅ Requisitos previos
 
 - Tener Docker y Docker Compose instalados en tu máquina.
 
-- Clonar los repositorios de [backend](https://github.com/MaximilianoCalahorra/TP-Distribuidos-GrupoC-backend) y [frontend](https://github.com/MaximilianoCalahorra/TP-Distribuidos-GrupoC-frontend) en la misma carpeta que este repo de infraestructura, ya que allí se encuentran los ```Dockerfile``` necesarios para levantar los servicios ```grpc-server```, ```grpc-client``` y ```frontend``` cuando ejecutes ```docker compose up --build -d```:
+- Clonar los repositorios de [backend](https://github.com/MaximilianoCalahorra/TP-Distribuidos-GrupoC-backend) y [frontend](https://github.com/MaximilianoCalahorra/TP-Distribuidos-GrupoC-frontend) en la misma carpeta que este repo de infraestructura, ya que allí se encuentran los ```Dockerfile``` necesarios para levantar los servicios ```grpc-server```, ```grpc-client```, ```frontend``` y ```kafka-service``` cuando ejecutes ```docker compose up --build -d```:
 
 ```bash
 /TP-Distribuidos-GrupoC/
 │
 ├─ TP-Distribuidos-GrupoC-backend/
-│   ├─ grpc_server/
-│   └─ grpc_client/
+│   ├─ grpc_client/
+|   ├─ grpc_server/
+│   └─ kafka_service/
 │
 ├─ TP-Distribuidos-GrupoC-frontend/
 │
@@ -89,9 +92,9 @@ cd TP-Distribuidos-GrupoC-docker/
     # ==========================================
     # Kafka
     # ==========================================
-    KAFKA_BOOTSTRAP_SERVERS=127.0.0.1:29092
-    KAFKA_CLIENT_ID=tp-grupoc-client
-    KAFKA_CONSUMER_GROUP_ID=tp-grupoc-group
+    KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+    KAFKA_CLIENT_ID=grupo-c
+    KAFKA_CONSUMER_GROUP_ID="ONG Empuje Comunitario"
     KAFKA_AUTO_OFFSET_RESET=earliest
 
     # ==========================================
@@ -134,6 +137,8 @@ Esto levantará los siguientes servicios:
 
 - ```kafbat-ui``` → Interfaz web para administrar topics y mensajes en Kafka
 
+- ```kafka-service``` → Microservicio Spring Boot que maneja la comunicación vía Kafka
+
 ---
 
 ### 🔍 Verificación rápida de contenedores
@@ -142,7 +147,7 @@ Esto levantará los siguientes servicios:
 docker compose ps
 ```
 
-Muestra todos los contenedores levantados, sus puertos y estados. Útil para confirmar que ```mysql```, ```grpc-server```, ```grpc-client```, ```frontend```, ```mailhog```, ```kafka``` y ```kafbat-ui``` están activos.
+Muestra todos los contenedores levantados, sus puertos y estados. Útil para confirmar que ```mysql```, ```grpc-server```, ```grpc-client```, ```frontend```, ```mailhog```, ```kafka```, ```kafbat-ui``` y ```kafka-service``` están activos.
 
 ---
 
@@ -253,6 +258,8 @@ Reemplazá ```<usuario>``` y la contraseña definida en tu ```.env```.
 - Asegurate de levantar primero el contenedor de MySQL antes de ejecutar el script SQL.
 
 - El frontend y el cliente gRPC dependen de que el servidor gRPC y MySQL estén activos. Docker Compose se encarga del orden con ```depends_on```, pero puede ser útil esperar unos segundos después de levantar los contenedores antes de acceder al frontend.
+
+- El frontend queda disponible en http://localhost:5173.
 
 - La interfaz web de MailHog queda disponible en http://localhost:8025.
 
