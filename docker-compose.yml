@@ -68,6 +68,24 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     volumes:
       - kafka-data:/var/lib/kafka/data
+  
+  # ==========================================
+  # Servicio Kafka (Spring Boot)
+  # ==========================================
+  kafka-service:
+    build:
+      context: ../TP-Distribuidos-GrupoC-backend/kakfa_service
+    image: sd-kafka-service-grupo-c:1.0
+    container_name: kafka-service
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: ${KAFKA_BOOTSTRAP_SERVERS}
+      KAFKA_CONSUMER_GROUP_ID: ${KAFKA_CONSUMER_GROUP_ID}
+      KAFKA_AUTO_OFFSET_RESET: ${KAFKA_AUTO_OFFSET_RESET}
+    depends_on:
+      - kafka
 
   # ==========================================
   # Kafka UI (Kafbat)
@@ -79,7 +97,7 @@ services:
     ports:
       - "9000:8080"
     environment:
-      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_NAME: ONG Empuje Comunitario
       KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
     depends_on:
       - kafka
