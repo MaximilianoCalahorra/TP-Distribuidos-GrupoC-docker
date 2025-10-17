@@ -98,6 +98,12 @@ cd TP-Distribuidos-GrupoC-docker/
     KAFKA_AUTO_OFFSET_RESET=earliest
 
     # ==========================================
+    # Kafka Service
+    # ==========================================
+    KAFKA_SERVICE_GRPC_SERVER=kafka-service
+    GRPC_SERVER_PRINCIPAL=grpc-server
+
+    # ==========================================
     # MailHog
     # ==========================================
     MAILHOG_URL=mailhog
