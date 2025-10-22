@@ -15,21 +15,30 @@ Este repositorio contiene los recursos necesarios para levantar el stack complet
 
 - Kafka Service (Spring Boot): microservicio encargado de gestionar la comunicación entre los distintos servicios vía Kafka (productores, consumidores y creación automática de topics).
 
+- GraphQL Service
+
+- REST Service
+
+- Cliente SOAP
+
 ---
 
 ### ✅ Requisitos previos
 
 - Tener Docker y Docker Compose instalados en tu máquina.
 
-- Clonar los repositorios de [backend](https://github.com/MaximilianoCalahorra/TP-Distribuidos-GrupoC-backend) y [frontend](https://github.com/MaximilianoCalahorra/TP-Distribuidos-GrupoC-frontend) en la misma carpeta que este repo de infraestructura, ya que allí se encuentran los ```Dockerfile``` necesarios para levantar los servicios ```grpc-server```, ```grpc-client```, ```frontend``` y ```kafka-service``` cuando ejecutes ```docker compose up --build -d```:
+- Clonar los repositorios de [backend](https://github.com/MaximilianoCalahorra/TP-Distribuidos-GrupoC-backend) y [frontend](https://github.com/MaximilianoCalahorra/TP-Distribuidos-GrupoC-frontend) en la misma carpeta que este repo de infraestructura, ya que allí se encuentran los ```Dockerfile``` necesarios para levantar los servicios ```grpc-server```, ```grpc-client```, ```frontend```, ```kafka-service```, ```graphql-service```, ```rest-service``` y ```soap-service``` cuando ejecutes ```docker compose up --build -d```:
 
 ```bash
 /TP-Distribuidos-GrupoC/
 │
 ├─ TP-Distribuidos-GrupoC-backend/
-│   ├─ grpc_client/
+│   ├─ graphql_service/
+|   ├─ grpc_client/
 |   ├─ grpc_server/
-│   └─ kafka_service/
+|   ├─ kafka_service/
+|   ├─ rest_service/
+│   └─ soap_service/
 │
 ├─ TP-Distribuidos-GrupoC-frontend/
 │
@@ -145,6 +154,12 @@ Esto levantará los siguientes servicios:
 
 - ```kafka-service``` → Microservicio Spring Boot que maneja la comunicación vía Kafka
 
+- ```graphql-service``` → Expone endpoints para obtener un informe de las donaciones enviadas y recibidas por la ONG y otro informe de los eventos de la ONG, además de permitir la gestión de un ABM sobre los filtros de las donaciones por usuario
+
+- ```rest-service``` → Expone endpoints para obtener un informe de las donaciones enviadas y recibidas por la ONG en formato de Excel, y para gestionar un ABM de filtros sobre los eventos por usuario
+
+- ```soap-service``` → Cliente SOAP para que el PRESIDENTE de la ONG obtenga información acerca de las demás ONGs y sus presidentes
+
 ---
 
 ### 🔍 Verificación rápida de contenedores
@@ -153,7 +168,7 @@ Esto levantará los siguientes servicios:
 docker compose ps
 ```
 
-Muestra todos los contenedores levantados, sus puertos y estados. Útil para confirmar que ```mysql```, ```grpc-server```, ```grpc-client```, ```frontend```, ```mailhog```, ```kafka```, ```kafbat-ui``` y ```kafka-service``` están activos.
+Muestra todos los contenedores levantados, sus puertos y estados. Útil para confirmar que ```mysql```, ```grpc-server```, ```grpc-client```, ```frontend```, ```mailhog```, ```kafka```, ```kafbat-ui```, ```kafka-service```, ```graphql-service```, ```rest-service``` y ```soap-service``` están activos.
 
 ---
 
