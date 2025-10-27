@@ -173,6 +173,8 @@ services:
     restart: unless-stopped
     ports:
       - "8084:8084"
+    environment:
+      CORS_ALLOWED_ORIGIN: ${CORS_ALLOWED_ORIGIN}
 
   # ==========================================
   # Frontend React
